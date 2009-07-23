@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 4;
 
 use Test::WWW::Mechanize::Catalyst 'CPANHQ';
 
@@ -12,12 +12,18 @@ use Test::WWW::Mechanize::Catalyst 'CPANHQ';
     $mech->get_ok("http://telaviv1.shlomifish.org:3000/author/SHLOMIF");
 
     # TEST
+    $mech->html_lint_ok("/author page validates");
+
+    # TEST
     $mech->follow_link_ok(
         {
             text_regex => qr{Statistics-Descriptive \d},
         },
         "Following the link to the release works."
     );
+
+    # TEST
+    $mech->html_lint_ok("Distribution page validates");
 }
 
 =head1 AUTHOR
