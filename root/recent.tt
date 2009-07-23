@@ -2,13 +2,13 @@
 [% date_head = releases.first.release_date.yml %]
 <p>[% date_head %]</p>
 <ul>
-[% WHILE ( release = releases.next ) %]
-[% release_date = release.release_date.ymd %]
-[% IF release_date != date_head; date_head = release_date; %]
+[%- WHILE ( release = releases.next ) -%]
+[%- release_date = release.release_date.ymd -%]
+[%- IF release_date != date_head; date_head = release_date; -%]
 </ul>
 <p>[% date_head %]</p>
 <ul>
-[% END %]
-    <li><a href="[% c.uri_for( '/dist', release.distribution.name, 'release', release.version) %]">[% release.name %]</a></li>
-[% END %]
+[%- END -%]
+<li><a href="[% c.uri_for( '/dist', release.distribution.name, 'release', release.version) %]">[% release.name %]</a></li>
+[% END -%]
 </ul>
