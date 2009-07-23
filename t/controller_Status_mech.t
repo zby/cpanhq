@@ -1,6 +1,7 @@
+#!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 4;
 
 use Test::WWW::Mechanize::Catalyst 'CPANHQ';
 
@@ -11,12 +12,18 @@ use Test::WWW::Mechanize::Catalyst 'CPANHQ';
     $mech->get_ok("http://localhost/status/");
 
     # TEST
+    $mech->html_lint_ok("/status/ validates.");
+
+    # TEST
     $mech->follow_link_ok(
         {
             text_regex => qr{Specific version of a release},
         },
         "Following the link to the release works."
     );
+
+    # TEST
+    $mech->html_lint_ok("The specific version link validates.");    
 }
 
 =head1 AUTHOR
