@@ -3,6 +3,9 @@ package CPANHQ::Storage::Package;
 use strict;
 use warnings;
 
+use File::Spec;
+use YAML::XS ();
+
 =head1 NAME
 
 CPANHQ::Storage::Package - a class representing a CPAN package/namespace
@@ -57,6 +60,38 @@ __PACKAGE__->belongs_to(
    distribution => 'CPANHQ::Storage::Distribution',
    'distribution_id'
 );
+
+my $mycpan_indexer_results = "$ENV{HOME}/minicpan-catalog/reports";
+
+sub _calc_path_to_mycpan_yml_file
+{
+    my $self = shift;
+
+    my $distribution = $self->distribution();
+
+    my $release = $distribution->latest_release();
+
+    my $fn_base = $distribution->name() . "-" . $release->version();
+
+    my $yml_file = File::Spec->catfile(
+        $mycpan_indexer_results,
+        "success",
+        $fn_base . ".yml",
+    );
+
+    return $yml_file;
+}
+
+sub get_html_path
+{
+    my $self = shift;
+
+    my ($yaml) = YAML::XS::LoadFile(
+        $self->_calc_path_to_mycpan_yml_file(),
+    );
+   
+    return $yaml;
+}
 
 =head1 SEE ALSO
 
