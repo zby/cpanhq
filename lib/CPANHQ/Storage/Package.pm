@@ -63,6 +63,13 @@ __PACKAGE__->belongs_to(
 
 my $mycpan_indexer_results = "$ENV{HOME}/minicpan-catalog/reports";
 
+sub latest_release
+{
+    my $self = shift;
+
+    return $self->distribution()->latest_release();
+}
+
 sub _calc_path_to_mycpan_yml_file
 {
     my $self = shift;
@@ -82,15 +89,64 @@ sub _calc_path_to_mycpan_yml_file
     return $yml_file;
 }
 
-sub get_html_path
+sub _calc_mycpan_yml
 {
     my $self = shift;
 
     my ($yaml) = YAML::XS::LoadFile(
         $self->_calc_path_to_mycpan_yml_file(),
     );
-   
+
     return $yaml;
+}
+
+sub _quote_like_clause_ops
+{
+    my $self = shift;
+    my $s = shift;
+
+    $s =~ s/(%_\\)/\\$1/g;
+
+    return $s;
+}
+
+sub get_html_path
+{
+    my $self = shift;
+
+    my $yaml = $self->_calc_mycpan_yml();
+
+    my $dist_file =
+        $yaml->{'dist_info'}{'META.yml'}{'provides'}{$self->name()}{'file'}
+        ;
+
+    my $release = $self->latest_release;
+
+    $release->_process_meta_yml();
+
+    my $files_rs = $release->files_rs();
+
+    my $matching_files_rs = $files_rs->search(
+        {
+            '-nest' => \[ 
+                "LIKE(?, filename, ?)", 
+                map { [ __DUMMY__ => $_ ] } (
+                    ("%/" . $self->_quote_like_clause_ops($dist_file)), 
+                    '\\'
+                ) 
+            ],
+        }
+    );
+    
+    my $path_record = $matching_files_rs->next();
+
+    my $to_path = CPANHQ->config->{'archive_extract_path'};
+
+    my $file_full_path = File::Spec->catfile(
+        $to_path, $path_record->filename(),
+    );
+
+    return $file_full_path;
 }
 
 =head1 SEE ALSO

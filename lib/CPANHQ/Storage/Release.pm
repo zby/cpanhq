@@ -47,6 +47,8 @@ use CPAN::Mini;
 use Archive::Extract;
 use YAML::XS;
 
+use CPANHQ;
+
 __PACKAGE__->load_components( qw( InflateColumn::DateTime Core ) );
 __PACKAGE__->table( 'release' );
 __PACKAGE__->add_columns(
@@ -129,7 +131,10 @@ __PACKAGE__->belongs_to(
 __PACKAGE__->belongs_to( author => 'CPANHQ::Storage::Author', 'author_id' );
 __PACKAGE__->belongs_to( license => 'CPANHQ::Storage::License', 'license_id' );
 __PACKAGE__->add_unique_constraint( [ qw( distribution_id version ) ] );
-
+__PACKAGE__->has_many(
+    files => 'CPANHQ::Storage::ReleaseFile',
+    'release_id',
+);
 
 =head2 $release->name()
 
@@ -175,14 +180,26 @@ sub _get_meta_yml {
 
     my $ae = Archive::Extract->new( archive => $arc_path );
 
-    my $to_path = tempdir();
+    my $to_path = CPANHQ->config->{'archive_extract_path'};
 
-    my $ok = $ae->extract( to => $to_path )
+    my $ok = $ae->extract( to => $to_path, )
         or die $ae->error();
 
-    my $files = $ae->files();
+    my $extracted_files = $ae->files();
 
-    my $meta_yml_file = first { m{META\.yml\z}i } @$files;
+    my $files_rs = $self->files_rs();
+
+    foreach my $f (@$extracted_files)
+    {
+        $files_rs->find_or_create(
+            {
+                release => $self,
+                filename => $f,
+            },
+        );
+    }
+
+    my $meta_yml_file = first { m{META\.yml\z}i } @$extracted_files;
 
     if (!defined ($meta_yml_file))
     {
@@ -257,11 +274,15 @@ sub _process_meta_yml {
                            ->find_or_create({string_id => $tag_string})
                            ;
             
+            #$self->result_source->schema
+            #    ->resultset('AuthorDistributionKeyword')
+            #    ->new({distribution => $self->distribution(), keyword => $tag})
+            #    ->insert()
+            #    ;
             $self->result_source->schema
                 ->resultset('AuthorDistributionKeyword')
-                ->new({distribution => $self->distribution(), keyword => $tag})
-                ->insert()
-                ;
+                ->find_or_create({distribution => $self->distribution(), keyword => $tag});
+                
         }
     }
 
