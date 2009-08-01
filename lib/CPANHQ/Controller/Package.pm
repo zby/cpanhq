@@ -16,6 +16,9 @@ Catalyst Controller.
 
 =cut
 
+use Pod::Xhtml;
+
+
 sub instance :Chained('/') :PathPart(package) :CaptureArgs(1)
 {
     my ($self, $c, $package_name) = @_;
@@ -46,7 +49,13 @@ sub show :Chained(instance) :PathPart('') :Args(0)
 
     my $dist = $package->distribution();
 
-    $c->stash(dist => $dist);
+    my $pod_path = $package->get_html_path();
+
+    my $parser = Pod::Xhtml->new ( StringMode => 1);
+
+    $parser->parse_from_file($pod_path);
+
+    $c->stash(dist => $dist, xhtml => $parser->asString(),);
 
     return;
 }

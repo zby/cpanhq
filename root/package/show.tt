@@ -5,3 +5,6 @@
 Belongs to: <a href="[% c.uri_for ('/dist', dist.name) %]">[% dist.name %]</a>
 </p>
 
+<h2>POD</h2>
+
+[% xhtml %]

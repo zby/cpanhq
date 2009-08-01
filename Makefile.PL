@@ -27,6 +27,7 @@ requires 'File::Temp';
 requires 'Graph::Easy';
 requires 'List::Util';
 requires 'parent';
+requires 'Pod::Xhtml';
 requires 'Rose::HTML::Form';
 requires 'YAML::XS';
 test_requires 'Test::WWW::Mechanize::Catalyst';
