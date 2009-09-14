@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 [%- USE HTML -%]
-<html lang=en>
+<html lang="en">
 <head>
-<meta charset=utf-8>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>CPANHQ[% IF title; " - $title"; END %]</title>
 <link type="text/css" rel=stylesheet href="[% c.uri_for( '/static/css/cpanhq.css' ) %]">
 <!-- Prevent the hot-linking as well as the fact these header elements appear

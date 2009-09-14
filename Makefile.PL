@@ -31,6 +31,7 @@ requires 'List::Util';
 requires 'parent';
 requires 'Parse::CPAN::Packages';
 requires 'Parse::CPAN::Whois';
+requires 'Pod::Xhtml';
 requires 'Rose::HTML::Form';
 requires 'Software::License';
 requires 'YAML::XS';

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use Test::WWW::Mechanize::Catalyst 'CPANHQ';
 
@@ -9,7 +9,10 @@ use Test::WWW::Mechanize::Catalyst 'CPANHQ';
     my $mech = Test::WWW::Mechanize::Catalyst->new;
 
     # TEST
-    $mech->get_ok("http://localhost/recent");
+    $mech->get_ok("http://localhost/recent", "Getting the /recent link");
+
+    # TEST
+    $mech->html_lint_ok("/recent validates.");
 
     # TEST
     $mech->follow_link_ok(
@@ -18,6 +21,7 @@ use Test::WWW::Mechanize::Catalyst 'CPANHQ';
         },
         "Following a link to the release works."
     );
+
 }
 
 =head1 AUTHOR
