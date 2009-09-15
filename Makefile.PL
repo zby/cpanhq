@@ -36,6 +36,8 @@ requires 'Rose::HTML::Form';
 requires 'Software::License';
 requires 'YAML::XS';
 test_requires 'Test::WWW::Mechanize::Catalyst';
+test_requires 'HTML::Lint';
+
 
 # for twitter feed
 requires 'XML::RSS';

@@ -70,36 +70,6 @@ sub latest_release
     return $self->distribution()->latest_release();
 }
 
-sub _calc_path_to_mycpan_yml_file
-{
-    my $self = shift;
-
-    my $distribution = $self->distribution();
-
-    my $release = $distribution->latest_release();
-
-    my $fn_base = $distribution->name() . "-" . $release->version();
-
-    my $yml_file = File::Spec->catfile(
-        $mycpan_indexer_results,
-        "success",
-        $fn_base . ".yml",
-    );
-
-    return $yml_file;
-}
-
-sub _calc_mycpan_yml
-{
-    my $self = shift;
-
-    my ($yaml) = YAML::XS::LoadFile(
-        $self->_calc_path_to_mycpan_yml_file(),
-    );
-
-    return $yaml;
-}
-
 sub _quote_like_clause_ops
 {
     my $self = shift;
@@ -114,11 +84,9 @@ sub get_html_path
 {
     my $self = shift;
 
-    my $yaml = $self->_calc_mycpan_yml();
-
-    my $dist_file =
-        $yaml->{'dist_info'}{'META.yml'}{'provides'}{$self->name()}{'file'}
-        ;
+    my $dist_file = $self->name;
+    $dist_file =~ s{::}{/}g;
+    $dist_file .= '.pm';
 
     my $release = $self->latest_release;
 
@@ -145,6 +113,9 @@ sub get_html_path
     my $file_full_path = File::Spec->catfile(
         $to_path, $path_record->filename(),
     );
+    if( ! -f $file_full_path ){
+        $release->_extract_files;
+    }
 
     return $file_full_path;
 }

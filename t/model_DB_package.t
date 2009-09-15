@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 2;
 
 use Catalyst::Test 'CPANHQ';
 
@@ -20,13 +20,6 @@ use DateTime;
 
     # TEST
     ok ($test_count_pkg, "Test::Count package is available.");
-
-    # TEST
-    is (
-        $test_count_pkg->_calc_path_to_mycpan_yml_file(),
-        "/home/shlomi/minicpan-catalog/reports/success/Test-Count-0.0500.yml",
-        "mycpan_yml_file is OK."
-    );
 
     # TEST
     is(

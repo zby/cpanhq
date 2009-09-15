@@ -155,16 +155,10 @@ May throw an exception.
 
 =cut
 
-sub _get_meta_yml {
+sub _arc_path {
     my $self = shift;
-
     my %config = CPAN::Mini->read_config;
-    my $minicpan_path =
-        $config{'local'}
-        ;
-
-    my $fn_base = $self->distribution->name() . "-" . $self->version();
-    my $author = $self->author->cpanid();
+    my $minicpan_path = $config{'local'};
 
     my $dist_path = $self->path();
     my $arc_path =
@@ -177,8 +171,14 @@ sub _get_meta_yml {
     {
         die "Archive path '$arc_path' not found";
     }
+    return $arc_path;
+}
 
-    my $ae = Archive::Extract->new( archive => $arc_path );
+
+sub _extract_files {
+    my $self = shift;
+
+    my $ae = Archive::Extract->new( archive => $self->_arc_path );
 
     my $to_path = CPANHQ->config->{'archive_extract_path'};
 
@@ -198,16 +198,23 @@ sub _get_meta_yml {
             },
         );
     }
+    return $extracted_files;
+}
 
-    my $meta_yml_file = first { m{META\.yml\z}i } @$extracted_files;
+
+sub _get_meta_yml {
+    my $self = shift;
+
+    my $meta_yml_file = first { m{META\.yml\z}i } @{ $self->_extract_files };
 
     if (!defined ($meta_yml_file))
     {
+        my $arc_path = $self->_arc_path;
         die "Could not find META.yml in archive '$arc_path'";
     }
 
     my $meta_yml_full_path = File::Spec->catfile(
-        $to_path, $meta_yml_file
+        CPANHQ->config->{'archive_extract_path'}, $meta_yml_file
     );
 
     my ($yaml) = YAML::XS::LoadFile($meta_yml_full_path);
