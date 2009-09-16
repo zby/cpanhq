@@ -13,6 +13,7 @@ use DateTime;
 use File::Next;
 use LWP::Simple;
 use Getopt::Long;
+use Try::Tiny;
 
 require CPANHQ;
 
@@ -37,9 +38,8 @@ else
     $filter = qr{.}ms;
 }
 
-my $cpan_base = shift;
-
-die "USAGE: $0 /path/to/cpan/" unless $cpan_base;
+my %config = CPAN::Mini->read_config;
+my $cpan_base = $config{'local'};
 
 $cpan_base = Path::Class::Dir->new( $cpan_base );
 
@@ -107,8 +107,15 @@ sub scan_releases
             size => $stat->size,
             release_date => DateTime->from_epoch( epoch => $stat->mtime ),
         }, { key => 'release_distribution_id_version' } );
+       
+        next if $db_release->files_rs->count;
+        try {
+            $db_release->_process_meta_yml();
+        }
+        catch { 
+            warn "caught error: $_";
+        };
     }
-
     print "\n$count Releases Indexed\n";
 }
 

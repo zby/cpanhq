@@ -204,8 +204,13 @@ sub _extract_files {
 
 sub _get_meta_yml {
     my $self = shift;
+    
+    my $files_rs = $self->files_rs();
+    if( ! $files_rs->count ){
+        $self->_extract_files;
+    }
 
-    my $meta_yml_file = first { m{META\.yml\z}i } @{ $self->_extract_files };
+    my $meta_yml_file = $files_rs->search( { filename => { like => '%META.yml' } } )->first;
 
     if (!defined ($meta_yml_file))
     {
@@ -214,7 +219,7 @@ sub _get_meta_yml {
     }
 
     my $meta_yml_full_path = File::Spec->catfile(
-        CPANHQ->config->{'archive_extract_path'}, $meta_yml_file
+        CPANHQ->config->{'archive_extract_path'}, $meta_yml_file->filename
     );
 
     my ($yaml) = YAML::XS::LoadFile($meta_yml_full_path);
