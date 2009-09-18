@@ -1,11 +1,11 @@
-package CPANHQ::Storage::Release;
+package CPANHQ::Storage::Result::Release;
 
 use strict;
 use warnings;
 
 =head1 NAME
 
-CPANHQ::Storage::Release - a class representing a CPANHQ release
+CPANHQ::Storage::Result::Release - a class representing a CPANHQ release
 
 =head1 SYNOPSIS
 
@@ -125,14 +125,14 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( qw( id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'release_date DESC' ] } );
 __PACKAGE__->belongs_to(
-    distribution => 'CPANHQ::Storage::Distribution',
+    distribution => 'CPANHQ::Storage::Result::Distribution',
     'distribution_id'
 );
-__PACKAGE__->belongs_to( author => 'CPANHQ::Storage::Author', 'author_id' );
-__PACKAGE__->belongs_to( license => 'CPANHQ::Storage::License', 'license_id' );
+__PACKAGE__->belongs_to( author => 'CPANHQ::Storage::Result::Author', 'author_id' );
+__PACKAGE__->belongs_to( license => 'CPANHQ::Storage::Result::License', 'license_id' );
 __PACKAGE__->add_unique_constraint( [ qw( distribution_id version ) ] );
 __PACKAGE__->has_many(
-    files => 'CPANHQ::Storage::ReleaseFile',
+    files => 'CPANHQ::Storage::Result::ReleaseFile',
     'release_id',
 );
 

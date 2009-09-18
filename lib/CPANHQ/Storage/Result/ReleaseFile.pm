@@ -1,4 +1,4 @@
-package CPANHQ::Storage::ReleaseFile;
+package CPANHQ::Storage::Result::ReleaseFile;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use YAML::XS ();
 
 =head1 NAME
 
-CPANHQ::Storage::Release - a class representing a file belonging to a
+CPANHQ::Storage::Result::Release - a class representing a file belonging to a
 CPAN release.
 
 =head1 SYNOPSIS
@@ -58,7 +58,7 @@ __PACKAGE__->set_primary_key( qw( id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'filename' ] } );
 __PACKAGE__->add_unique_constraint( [ qw( release_id filename ) ] );
 __PACKAGE__->belongs_to(
-   release => 'CPANHQ::Storage::Release',
+   release => 'CPANHQ::Storage::Result::Release',
    'release_id'
 );
 

@@ -1,4 +1,4 @@
-package CPANHQ::Storage::Package;
+package CPANHQ::Storage::Result::Package;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use YAML::XS ();
 
 =head1 NAME
 
-CPANHQ::Storage::Package - a class representing a CPAN package/namespace
+CPANHQ::Storage::Result::Package - a class representing a CPAN package/namespace
 
 =head1 SYNOPSIS
       
@@ -57,7 +57,7 @@ __PACKAGE__->set_primary_key( qw( id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'name' ] } );
 __PACKAGE__->add_unique_constraint( [ 'name' ] );
 __PACKAGE__->belongs_to(
-   distribution => 'CPANHQ::Storage::Distribution',
+   distribution => 'CPANHQ::Storage::Result::Distribution',
    'distribution_id'
 );
 

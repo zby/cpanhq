@@ -1,11 +1,11 @@
-package CPANHQ::Storage::Keyword;
+package CPANHQ::Storage::Result::Keyword;
 
 use strict;
 use warnings;
 
 =head1 NAME
 
-CPANHQ::Storage::Keyword - a class representing a CPAN keyword
+CPANHQ::Storage::Result::Keyword - a class representing a CPAN keyword
 
 =head1 SYNOPSIS
       
@@ -48,7 +48,7 @@ __PACKAGE__->set_primary_key( qw( id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'string_id' ] } );
 __PACKAGE__->add_unique_constraint( [ 'string_id' ] );
 __PACKAGE__->has_many(
-    author_distros => 'CPANHQ::Storage::AuthorDistributionKeyword',
+    author_distros => 'CPANHQ::Storage::Result::AuthorDistributionKeyword',
     'keyword_id'
 );
 
