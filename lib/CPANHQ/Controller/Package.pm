@@ -18,7 +18,6 @@ Catalyst Controller.
 
 use Pod::Xhtml;
 
-
 sub instance :Chained('/') :PathPart(package) :CaptureArgs(1)
 {
     my ($self, $c, $package_name) = @_;
@@ -67,7 +66,19 @@ sub show :Chained(instance) :PathPart('') :Args(0)
 sub index : Private {
     my ( $self, $c ) = @_;
 
-    $c->response->body('Matched CPANHQ::Controller::Package in Package.');
+    my $page = $c->request->params->{page} || 1;
+    $c->stash->{ files } = $c->model( 'DB::ReleaseFile' )->search( 
+        { 
+            'release_file_fts.package_name' => { match => 'catalyst' } 
+        }, 
+        { 
+            join => 'release_file_fts',
+            page => $page,
+            rows => 50,
+            order_by => 'release_date',
+        } 
+    );
+    $c->stash( template => 'package/list.tt' );
 }
 
 =head1 AUTHOR

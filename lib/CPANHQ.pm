@@ -7,6 +7,7 @@ use Catalyst::Runtime '5.80';
 
 use parent qw(Catalyst);
 use Catalyst qw(
+-Debug
     ConfigLoader
     Authentication
     Authorization::ACL

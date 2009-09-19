@@ -73,6 +73,26 @@ if ($scan_packages)
     scan_packages();
 }
 
+{
+    my $to_path = CPANHQ->config->{'archive_extract_path'};
+    my $file_rs = CPANHQ->model('DB::ReleaseFile');
+    while ( my $file = $file_rs->next ){
+        my ( $package_id, $abstract );
+        if( $file->filename =~ /lib\/(.*)\.pm\z/ ){
+            my $p_name = $1;
+            $p_name =~ s/$to_path//;
+            $p_name =~ s{/}{::}g;
+            my $package = $file->release->distribution->packages->search( { name => $p_name } )->first;
+            next if !$package;
+            $file->package_id( $package->id );
+            my $mm =  bless { DISTNAME => $p_name }, 'ExtUtils::MM_Unix';
+            $file->abstract( $mm->parse_abstract( File::Spec->catfile( $to_path, $file->filename ) ) );
+            $file->update;
+        }
+    }
+}
+
+
 sub scan_releases
 {
     my $file_it = File::Next::files( { follow_symlinks => 0 }, $cpan_base->subdir( qw( authors id ) ) );
@@ -91,6 +111,7 @@ sub scan_releases
 
         # handle dist author
         my $author = $authors->author( $dist->cpanid );
+        next if $author < 'MSCHILLI';
         my $db_author = $author_rs->update_or_create( { cpanid => $author->pauseid, email => ($author->email || ""), name => $author->name, homepage => $author->homepage, }, { key => 'author_cpanid' } );
 
         # handle dist

@@ -52,6 +52,23 @@ __PACKAGE__->add_columns(
         size        => 1024,
         is_nullable => 0,
     },
+    package_id => {
+        data_type => 'bigint',
+        is_nullable => 1,
+    },  
+    package_name => {
+        data_type   => 'varchar',
+        size        => 255,
+        is_nullable => 1,
+    },  
+    abstract => {
+        data_type => 'text',
+        is_nullable => 1,
+    },
+    release_date => {
+        data_type   => 'datetime',
+        is_nullable => 0,
+    },
 );
 
 __PACKAGE__->set_primary_key( qw( id ) );
@@ -60,6 +77,16 @@ __PACKAGE__->add_unique_constraint( [ qw( release_id filename ) ] );
 __PACKAGE__->belongs_to(
    release => 'CPANHQ::Storage::Release',
    'release_id'
+);
+
+__PACKAGE__->belongs_to(
+   release_file_fts => 'CPANHQ::Storage::ReleaseFileFts',
+   'id'
+);
+
+__PACKAGE__->belongs_to(
+   'package' => 'CPANHQ::Storage::Package',
+   'package_id'
 );
 
 =head1 SEE ALSO

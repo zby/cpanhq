@@ -42,10 +42,12 @@ use base qw( DBIx::Class );
 use File::Spec;
 use List::Util qw(first);
 use File::Temp qw(tempdir);
+use File::Spec;
 
 use CPAN::Mini;
 use Archive::Extract;
 use YAML::XS;
+use ExtUtils::MM_Unix;
 
 use CPANHQ;
 
@@ -189,12 +191,29 @@ sub _extract_files {
 
     my $files_rs = $self->files_rs();
 
-    foreach my $f (@$extracted_files)
-    {
+    my $dir = $self->distribution->name;
+    $dir =~ s/::/-/g;
+    $dir = File::Spec->catdir( $dir . '-' . $self->version, 'lib' );
+
+    my $package_rs = $self->result_source->schema->resultset( 'Package' );
+    foreach my $f (@$extracted_files) {
+        my ( $package_id, $abstract );
+        if( $f =~ /$dir\/(.*)\.pm\z/ ){
+            my $p_name = $1;
+            $p_name =~ s/$to_path//;
+            $p_name =~ s{/}{::}g;
+            my $package = $package_rs->find_or_create( { name => $p_name, distribution_id => $self->distribution->id } );
+            $package_id = $package->id;
+            my $mm =  bless { DISTNAME => $p_name }, 'ExtUtils::MM_Unix';
+            $abstract = $mm->parse_abstract( File::Spec->catfile( $to_path, $f ) );
+        }
+
         $files_rs->find_or_create(
             {
                 release => $self,
                 filename => $f,
+                package_id => $package_id,
+                abstract => $abstract,
             },
         );
     }
@@ -299,7 +318,14 @@ sub _process_meta_yml {
     }
 
     if ( defined( my $deps = $meta_yml->{'requires'} ) ) {
-        foreach my $dep_name (keys %$deps) {
+        my @deps;
+        if( ref $deps eq 'HASH' ){
+            @deps = keys %$deps;
+        }
+        if( ! ref $deps ){
+            @deps = $deps;
+        }
+        foreach my $dep_name (@deps) {
             $dep_name =~ s/::/-/g;
             my $dep =
             $self->result_source->schema->resultset('Distribution')

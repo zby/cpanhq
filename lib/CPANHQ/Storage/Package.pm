@@ -60,6 +60,10 @@ __PACKAGE__->belongs_to(
    distribution => 'CPANHQ::Storage::Distribution',
    'distribution_id'
 );
+__PACKAGE__->has_many(
+    files => 'CPANHQ::Storage::ReleaseFile',
+    'package_id',
+);
 
 my $mycpan_indexer_results = "$ENV{HOME}/minicpan-catalog/reports";
 
