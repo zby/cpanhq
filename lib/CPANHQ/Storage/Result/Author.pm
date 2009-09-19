@@ -1,11 +1,11 @@
-package CPANHQ::Storage::Author;
+package CPANHQ::Storage::Result::Author;
 
 use strict;
 use warnings;
 
 =head1 NAME
 
-CPANHQ::Storage::Author - a class representing a CPANHQ author
+CPANHQ::Storage::Result::Author - a class representing a CPANHQ author
 
 =head1 SYNOPSIS
 
@@ -57,7 +57,7 @@ __PACKAGE__->set_primary_key( qw( id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'cpanid' ] } );
 __PACKAGE__->add_unique_constraint( [ 'cpanid' ] );
 __PACKAGE__->has_many(
-    releases => 'CPANHQ::Storage::Release', 'author_id'
+    releases => 'CPANHQ::Storage::Result::Release', 'author_id'
 );
 
 =head2 $author->display_name()

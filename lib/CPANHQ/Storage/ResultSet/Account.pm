@@ -1,4 +1,4 @@
-package CPANHQ::ResultSet::Account;
+package CPANHQ::Storage::ResultSet::Account;
 
 use strict;
 use warnings;
@@ -17,7 +17,7 @@ __END__
 
 =head1 NAME
 
-CPANHQ::ResultSet::Account - an account result-set.
+CPANHQ::Storage::ResultSet::Account - an account result-set.
 
 =head1 SYNOPSIS
 

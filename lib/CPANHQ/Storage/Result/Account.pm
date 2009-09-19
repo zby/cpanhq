@@ -1,4 +1,4 @@
-package CPANHQ::Storage::Account;
+package CPANHQ::Storage::Result::Account;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-CPANHQ::Storage::Account - a class representing a CPANHQ account
+CPANHQ::Storage::Result::Account - a class representing a CPANHQ account
 
 =head1 SYNOPSIS
       
@@ -26,7 +26,6 @@ use base qw( DBIx::Class );
 
 __PACKAGE__->load_components( qw( TimeStamp Core ) );
 __PACKAGE__->table( 'account' );
-__PACKAGE__->resultset_class( 'CPANHQ::ResultSet::Account' );
 __PACKAGE__->add_columns(
     id => {
         data_type         => 'bigint',

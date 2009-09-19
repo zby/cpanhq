@@ -1,11 +1,11 @@
-package CPANHQ::Storage::AuthorDistributionKeyword;
+package CPANHQ::Storage::Result::AuthorDistributionKeyword;
 
 use strict;
 use warnings;
 
 =head1 NAME
 
-CPANHQ::Storage::AuthorDistributionKeyword - an author's distribution <-> 
+CPANHQ::Storage::Result::AuthorDistributionKeyword - an author's distribution <-> 
 keyword association
 
 =head1 SYNOPSIS
@@ -42,11 +42,11 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( qw( distribution_id keyword_id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'distribution_id', 'keyword_id' ] } );
 __PACKAGE__->belongs_to(
-    distribution => 'CPANHQ::Storage::Distribution',
+    distribution => 'CPANHQ::Storage::Result::Distribution',
     'distribution_id',
 );
 __PACKAGE__->belongs_to(
-    keyword => 'CPANHQ::Storage::Keyword',
+    keyword => 'CPANHQ::Storage::Result::Keyword',
     'keyword_id',
 );
 

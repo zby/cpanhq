@@ -1,4 +1,4 @@
-package CPANHQ::Storage::Requires;
+package CPANHQ::Storage::Result::Requires;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use base qw( DBIx::Class );
 
 =head1 NAME
 
-CPANHQ::Storage::Requires - a class representing a CPAN dependencies
+CPANHQ::Storage::Result::Requires - a class representing a CPAN dependencies
 
 =head1 SYNOPSIS
 
@@ -48,8 +48,8 @@ __PACKAGE__->add_columns(
 );
 
 __PACKAGE__->set_primary_key( 'id' );
-__PACKAGE__->belongs_to( dist_from => 'CPANHQ::Storage::Distribution' );
-__PACKAGE__->belongs_to( dist_to   => 'CPANHQ::Storage::Distribution' );
+__PACKAGE__->belongs_to( dist_from => 'CPANHQ::Storage::Result::Distribution' );
+__PACKAGE__->belongs_to( dist_to   => 'CPANHQ::Storage::Result::Distribution' );
 
 =head1 SEE ALSO
 

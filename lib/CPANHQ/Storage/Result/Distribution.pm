@@ -1,4 +1,4 @@
-package CPANHQ::Storage::Distribution;
+package CPANHQ::Storage::Result::Distribution;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use base qw( DBIx::Class );
 
 =head1 NAME
 
-CPANHQ::Storage::Distribution - a class representing a CPANHQ CPAN distribution
+CPANHQ::Storage::Result::Distribution - a class representing a CPANHQ CPAN distribution
 
 =head1 SYNOPSIS
       
@@ -49,7 +49,7 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( qw( id ) );
 __PACKAGE__->resultset_attributes( { order_by => [ 'name' ] } );
 __PACKAGE__->has_many(
-    releases => 'CPANHQ::Storage::Release',
+    releases => 'CPANHQ::Storage::Result::Release',
     'distribution_id'
 );
 __PACKAGE__->many_to_many(
@@ -59,20 +59,20 @@ __PACKAGE__->many_to_many(
 __PACKAGE__->add_unique_constraint( [ 'name' ] );
 
 __PACKAGE__->has_many(
-    author_keywords => 'CPANHQ::Storage::AuthorDistributionKeyword',
+    author_keywords => 'CPANHQ::Storage::Result::AuthorDistributionKeyword',
     'distribution_id'
 );
 
 __PACKAGE__->has_many(
-    packages => 'CPANHQ::Storage::Package',
+    packages => 'CPANHQ::Storage::Result::Package',
     'distribution_id'
 );
 __PACKAGE__->has_many(
-    uses => 'CPANHQ::Storage::Requires',
+    uses => 'CPANHQ::Storage::Result::Requires',
     'dist_from'
 );
 __PACKAGE__->has_many(
-    used_by => 'CPANHQ::Storage::Requires',
+    used_by => 'CPANHQ::Storage::Result::Requires',
     'dist_to'
 );
 
