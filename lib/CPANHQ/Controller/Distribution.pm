@@ -40,7 +40,6 @@ sub instance :Chained('/') :PathPart('dist') :CaptureArgs(1) {
     }
 
     my $latest = $dist->latest_release;
-    $latest->_process_meta_yml();
 
     my $uses = $dist->uses;
     my $dist_uses;

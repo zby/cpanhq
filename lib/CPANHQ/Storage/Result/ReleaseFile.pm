@@ -3,9 +3,6 @@ package CPANHQ::Storage::Result::ReleaseFile;
 use strict;
 use warnings;
 
-use File::Spec;
-use YAML::XS ();
-
 =head1 NAME
 
 CPANHQ::Storage::Result::Release - a class representing a file belonging to a
@@ -56,18 +53,13 @@ __PACKAGE__->add_columns(
         data_type => 'bigint',
         is_nullable => 1,
     },  
-    package_name => {
-        data_type   => 'varchar',
-        size        => 255,
-        is_nullable => 1,
-    },  
     abstract => {
         data_type => 'text',
         is_nullable => 1,
     },
-    release_date => {
-        data_type   => 'datetime',
-        is_nullable => 0,
+    pod => {
+        data_type => 'text',
+        is_nullable => 1,
     },
 );
 
@@ -80,12 +72,7 @@ __PACKAGE__->belongs_to(
 );
 
 __PACKAGE__->belongs_to(
-   release_file_fts => 'CPANHQ::Storage::ReleaseFileFts',
-   'id'
-);
-
-__PACKAGE__->belongs_to(
-   'package' => 'CPANHQ::Storage::Package',
+   'package' => 'CPANHQ::Storage::Result::Package',
    'package_id'
 );
 

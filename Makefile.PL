@@ -27,6 +27,7 @@ requires 'File::Slurp';
 requires 'File::Spec';
 requires 'File::Temp';
 requires 'Graph::Easy';
+requires 'HTML::FormHandler';
 requires 'List::Util';
 requires 'parent';
 requires 'Parse::CPAN::Packages';

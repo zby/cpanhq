@@ -21,6 +21,7 @@ on all pages
 <h1>CPANHQ</h1>
 <ul id=topmenu>
     <li><a href="[% c.uri_for('/') %]">Home</a></li>
+    <li><a href="[% c.uri_for('/package/') %]">Search Packages</a></li>
     <li><a href="[% c.uri_for('/about') %]">About</a></li>
     <li><a href="http://github.com/bricas/cpanhq/">Code</a></li>
     <li><a href="[% c.uri_for('/status') %]">Status</a></li>

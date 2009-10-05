@@ -1,0 +1,27 @@
+<h2>Packages</h2>
+[% form.render %]
+<table>
+<tr>
+<th>Name</dh>
+<th>Author</dh>
+<th>Abstract</dh>
+<th>Release Date</dh>
+</tr>
+[%- WHILE ( package = packages.next ) -%]
+<tr>
+<td><a href="[% c.uri_for( '/package', package.name ) %]">[% package.name %]</a> </td>
+<td>
+[% IF !last OR last.author != package.author.name %] [% last.author = package.author.name %] 
+<a href="[% c.uri_for( '/author', package.author.cpanid ) %]">[% last.author %]</a>
+[% END %]
+</td>
+<td>[% package.abstract %]</td>
+<td>
+[% IF !last OR last.release_date != package.release_date.ymd %][% last.release_date = package.release_date.ymd %][% package.release_date.ymd %][% END %]
+</td>
+</tr>
+[% END -%]
+</table>
+[% pager = packages.pager %]
+[% PROCESS pager.tt %]
+

@@ -4,23 +4,15 @@ Run script/cpanhq_server.pl to test the application.
 
 To get the tests running do this:
 
-1. Set up minicpan ( http://search.cpan.org/perldoc?minicpan ).
+1. "gunzip cpanhq.db.gz"
 
-2. Mirror CPAN.
+2. "perl Makefile.PL" - make sure all dependencies are installed.
 
-3. "perl Makefile.PL" - make sure all dependencies are installed.
+3. Run "make"
 
-4. Run "make"
+4. perl tmp/gen-twitter-feed.pl
 
-5. Run "perl tmp/deploy.pl"
+5. Run "make test".
 
-6. Run "perl tmp/index.pl /path/to/my/minicpan"
-
-Where /path/to/my/minicpan is the path to your minicpan mirror.
-
-7. Run "perl tmp/populate-licenses-sql.pl"
-
-8. Run "perl tmp/gen-twitter-feed.pl"
-
-9. Run "make test".
+NOTE: the scripts loading the database don't work currently - so I am uploading a loaded db into the repository.
 

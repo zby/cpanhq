@@ -46,15 +46,7 @@ sub show :Chained(instance) :PathPart('') :Args(0)
 
     my $package = $c->stash->{'package'};
 
-    my $dist = $package->distribution();
-
-    my $pod_path = $package->get_html_path();
-
-    my $parser = Pod::Xhtml->new ( StringMode => 1);
-
-    $parser->parse_from_file($pod_path);
-
-    $c->stash(dist => $dist, xhtml => $parser->asString(),);
+    $c->stash(dist => $package->distribution, xhtml => $package->pod,);
 
     return;
 }
@@ -66,19 +58,40 @@ sub show :Chained(instance) :PathPart('') :Args(0)
 sub index : Private {
     my ( $self, $c ) = @_;
 
-    my $page = $c->request->params->{page} || 1;
-    $c->stash->{ files } = $c->model( 'DB::ReleaseFile' )->search( 
-        { 
-            'release_file_fts.package_name' => { match => 'catalyst' } 
-        }, 
-        { 
-            join => 'release_file_fts',
-            page => $page,
-            rows => 50,
-            order_by => 'release_date',
-        } 
-    );
+    my $params = $c->request->params;
+    my $page = delete $params->{page} || 1;
+    my $form =  My::Form->new;
+    if( $form->process( $params ) ){
+        my $s_params = $form->value;
+        for my $key ( keys %$s_params ){
+            delete $s_params->{$key} if ! defined $s_params->{$key};
+        }
+        $c->stash->{ packages } = $c->model( 'DB::Package' )->xsearch( 
+            $s_params,
+            { 
+                page => $page,
+                rows => 50,
+                order_by => 'me.release_date',
+            } 
+        );
+    }
+    $c->stash( form => $form );
     $c->stash( template => 'package/list.tt' );
+}
+
+{
+
+    package My::Form;
+    use HTML::FormHandler::Moose;
+    extends 'HTML::FormHandler';
+    with 'HTML::FormHandler::Render::Simple';
+
+    has '+http_method' => ( default => 'GET' );
+    has_field 'query';
+    has_field 'author';
+    has_field 'younger_than' => ( type => 'Date', format => "yy-mm-dd"  );
+#    has_field 'include_dev' => ( type => 'Checkbox' );
+    has_field 'submit' => ( type => 'Submit', value => 'Search' );
 }
 
 =head1 AUTHOR
