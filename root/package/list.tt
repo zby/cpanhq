@@ -2,10 +2,10 @@
 [% form.render %]
 <table>
 <tr>
-<th>Name</dh>
+<th><a href="[% order_by_link('me.name') %]">Name</a></dh>
 <th>Author</dh>
 <th>Abstract</dh>
-<th>Release Date</dh>
+<th><a href="[% order_by_link( 'me.release_date' ) %]">Release Date</a></dh>
 </tr>
 [%- WHILE ( package = packages.next ) -%]
 <tr>

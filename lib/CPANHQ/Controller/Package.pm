@@ -66,17 +66,40 @@ sub index : Private {
         for my $key ( keys %$s_params ){
             delete $s_params->{$key} if ! defined $s_params->{$key};
         }
+        $s_params->{order} //= 'me.release_date';
         $c->stash->{ packages } = $c->model( 'DB::Package' )->xsearch( 
             $s_params,
             { 
                 page => $page,
                 rows => 50,
-                order_by => 'me.release_date',
             } 
         );
     }
-    $c->stash( form => $form );
-    $c->stash( template => 'package/list.tt' );
+    $c->stash( 
+        form => $form, 
+        template => 'package/list.tt',
+        order_by_link => sub {
+            my $col = shift;
+            my $current = $params->{order};
+            my @parts = split /\s*,\s*/, $current;
+            my $done;
+            for my $part (@parts){
+                if( $part eq $col ){
+                    $part = "$col desc";
+                    $done = 1;
+                }
+                elsif( $part eq "$col desc"){
+                    $part = $col;
+                    $done = 1;
+                }
+            }
+            if( !$done ){
+                push @parts, $col;
+            }
+            my $order = join ', ', @parts;
+            return $c->req->uri_with( { order => $order, page => 1 } );
+        }
+    );
 }
 
 {
@@ -89,8 +112,18 @@ sub index : Private {
     has '+http_method' => ( default => 'GET' );
     has_field 'query';
     has_field 'author';
-    has_field 'younger_than' => ( type => 'Date', format => "yy-mm-dd"  );
+    has_field 'younger_than' => ( label => 'Newer than', type => 'Date', format => "yy-mm-dd"  );
 #    has_field 'include_dev' => ( type => 'Checkbox' );
+    has_field 'order' => ( 
+        type => 'Text', 
+        apply => [ 
+        { 
+            check => qr/^(|me\.(release_date|name)( desc)?(, me\.(release_date|name)( desc)?)?)\z/,
+#            check => qr/^aaa$/,
+            message => 'Allowed ordering only by columns: "me.release_date" and "me.name" (with optional "desc" modifier).',
+        }
+        ]
+    );
     has_field 'submit' => ( type => 'Submit', value => 'Search' );
 }
 

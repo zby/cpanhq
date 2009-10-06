@@ -20,6 +20,12 @@ sub search_for_author {
     return $self;
 }
 
+sub search_for_order {
+    my ( $self, $params ) = @_;
+    $self = $self->search( { }, { order_by => $params->{order} } );
+    return $self;
+}
+
 sub search_for_younger_than {
     my ( $self, $params ) = @_;
     $self = $self->search( { 'me.release_date' => { '>' => $params->{younger_than} } } );
